@@ -1,0 +1,21 @@
+[package]
+name = "nu_plugin_graph"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+build = "build.rs"
+
+[dependencies]
+nu-plugin.workspace = true
+nu-protocol.workspace = true
+rgb = "0.8"
+
+serde.workspace = true
+textplots = "0.8.7"
+typetag.workspace = true
+
+[build-dependencies]
+built.workspace = true
