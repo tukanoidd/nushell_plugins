@@ -24,8 +24,7 @@
       in {
         devShells.default = outputs."nushell_plugins".devShell;
         packages = {
-          tasker = outputs."nu_plugin_tasker".packages.release;
-          tui = outputs."nu_plugin_tui".packages.release;
+          graph = outputs."nu_plugin_graph".packages.release;
         };
       };
     };
