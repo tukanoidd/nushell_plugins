@@ -6,9 +6,6 @@ resolver = "3"
 nu-plugin = "0.103.0"
 nu-protocol = "0.103.0"
 
-serde = { version = "1.0.219", features = ["derive"] }
-typetag = "0.2.20"
-
 built = "0.7"
 
 [workspace.package]

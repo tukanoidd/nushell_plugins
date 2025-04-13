@@ -11,11 +11,11 @@ build = "build.rs"
 [dependencies]
 nu-plugin.workspace = true
 nu-protocol.workspace = true
-rgb = "0.8"
 
-serde.workspace = true
+rgb = "0.8"
 textplots = "0.8.7"
-typetag.workspace = true
+
+smart-default = "0.7.1"
 
 [build-dependencies]
 built.workspace = true

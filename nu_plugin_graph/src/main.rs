@@ -1,7 +1,7 @@
 mod plugin;
 mod types;
 
-use nu_plugin::{MsgPackSerializer, serve_plugin};
+use nu_plugin::{serve_plugin, MsgPackSerializer};
 use plugin::NuGraphsPlugin;
 
 pub mod built_info {

@@ -1,8 +1,8 @@
 use nu_plugin::PluginCommand;
-use nu_protocol::{FromValue, Signature, SyntaxShape, Type, Value};
+use nu_protocol::{Signature, SyntaxShape, Type, Value};
 use textplots::{AxisBuilder, Chart, ColorPlot, Plot, Shape};
 
-use crate::types::{GraphColor, GraphLineStyle, GraphPoint, GraphType};
+use crate::types::{GraphConfig, GraphLineConfig, GraphPoint, GraphType};
 
 use super::NuGraphsPlugin;
 
@@ -16,84 +16,38 @@ impl PluginCommand for Draw {
     }
 
     fn signature(&self) -> Signature {
-        Signature::build("draw")
-            // Input
-            .input_output_type(
-                Type::Table(Box::new([
-                    ("x".into(), Type::Float),
-                    ("y".into(), Type::Float),
-                ])),
-                Type::String,
-            )
-            // General
-            .named("type", SyntaxShape::String, "Type of graph", Some('t'))
-            .named(
-                "line-color",
-                SyntaxShape::Record(vec![
-                    ("r".into(), SyntaxShape::Int),
-                    ("g".into(), SyntaxShape::Int),
-                    ("b".into(), SyntaxShape::Int),
-                ]),
-                "Color of the line",
-                Some('c'),
-            )
-            .named("width", SyntaxShape::Int, "Width of the chart", Some('W'))
-            .named("height", SyntaxShape::Int, "Height of the chart", Some('H'))
-            // X Axis
-            .named("x-min", SyntaxShape::Float, "Minimum X Value", None)
-            .named("x-max", SyntaxShape::Float, "Maximum X Value", None)
-            .named(
-                "x-axis-style",
-                SyntaxShape::String,
-                "Style of the X Axis line",
-                None,
-            )
-            .named(
-                "x-axis-label",
-                SyntaxShape::String,
-                "Label for the X Axis",
-                Some('x'),
-            )
-            // Y Axis
-            .named("y-min", SyntaxShape::Float, "Minimum Y Value", None)
-            .named("y-max", SyntaxShape::Float, "Maximum Y Value", None)
-            .named(
-                "y-axis-style",
-                SyntaxShape::String,
-                "Style of the Y Axis line",
-                None,
-            )
-            .named(
-                "y-axis-label",
-                SyntaxShape::String,
-                "Label for the Y Axis",
-                Some('y'),
-            )
-            // Remove From Graph
-            .named(
-                "no-header",
-                SyntaxShape::Boolean,
-                "Don't show the header",
-                None,
-            )
-            .named(
-                "no-borders",
-                SyntaxShape::Boolean,
-                "Don't draw borders",
-                Some('B'),
-            )
-            .named(
-                "no-axis",
-                SyntaxShape::Boolean,
-                "Don't draw axis",
-                Some('A'),
-            )
-            .named(
-                "no-figures",
-                SyntaxShape::Boolean,
-                "Don't draw figures",
-                Some('F'),
-            )
+        Signature::build("draw").input_output_type(Type::Nothing, Type::String).required(
+            "graph-config",
+            SyntaxShape::Any,
+            [
+                "\n\tGraph Configuration {",
+                &[
+                    "\ttype: Type of Graph ([points*, lines, steps, bars])",
+                    "width: Width of Graph (default: 120)",
+                    "width: Height of Graph (default: 60)",
+                    "x_min: Minimum Value Of X (default: Minimum value of x across the lines)",
+                    "x_min: Maximum Value Of X (default: Maximum value of x across the lines)",
+                    "x_style: Style of the Graphs X Axis ([none, solid*, dotted, dashed])",
+                    "x_label: Label of the X Axis (default: 'X')",
+                    "y_min: Minimum Value Of Y (default: Minimum value of y across the lines)",
+                    "y_min: Maximum Value Of Y (default: Maximum value of y across the lines)",
+                    "y_style: Style of the Graphs Y Axis ([none, solid*, dotted, dashed])",
+                    "y_label: Label of the Y Axis (default: 'Y')",
+                    "no_header: Don't show header of the graph (default: false)",
+                    "no_axis: Don't show axis of the graph (default: false)",
+                    "no_borders: Don't show border of the graph (default: false)",
+                    "no_figures: Don't show figures of the graph (default: false)",
+                    "lines: [{",
+                    &[
+                        "\tcolor: Colors of the Graph Line ({r: int, g: int, b: int} (0-255)) (default: nothing)",
+                        "points: Points of the Graph Line ([{x: float, y: float}] (default: nothing)"
+                    ].join("\n\t\t\t"),
+                    "}]"
+                ].join("\n\t\t"),
+                "}",
+            ]
+            .join("\n\t"),
+        )
     }
 
     fn description(&self) -> &str {
@@ -105,40 +59,53 @@ impl PluginCommand for Draw {
         _plugin: &Self::Plugin,
         _engine: &nu_plugin::EngineInterface,
         call: &nu_plugin::EvaluatedCall,
-        input: nu_protocol::PipelineData,
+        _input: nu_protocol::PipelineData,
     ) -> Result<nu_protocol::PipelineData, nu_protocol::LabeledError> {
-        let input_span = input.span().unwrap_or(call.head);
+        let GraphConfig {
+            ty,
+            width,
+            height,
+            x_min,
+            x_max,
+            x_style,
+            x_label,
+            y_min,
+            y_max,
+            y_style,
+            y_label,
+            no_header,
+            no_axis,
+            no_borders,
+            no_figures,
+            lines,
+        } = call.req(0)?;
 
-        let mut input = Vec::<GraphPoint>::from_value(input.into_value(input_span)?)?;
-        input.sort_by_key(|p| (p.x * (p.x.fract().to_string().len() - 2) as f32) as i64);
+        let ty = ty.unwrap_or_default();
+        let width = width.unwrap_or(120);
+        let height = height.unwrap_or(60);
 
-        macro_rules! extract_flag {
-            ($name:literal | $ty:ty $(| $default:expr)?) => {
-                call.get_flag::<$ty>($name)?$(.unwrap_or_else(|| $default))?
-            };
-        }
+        let x_style = x_style.unwrap_or_default();
+        let x_label = x_label.unwrap_or_else(|| "X".into());
 
-        let ty = extract_flag!("type" | GraphType | GraphType::Points);
+        let y_style = y_style.unwrap_or_default();
+        let y_label = y_label.unwrap_or_else(|| "Y".into());
 
-        let line_color = extract_flag!("line-color" | GraphColor);
+        let no_header = no_header.unwrap_or_default();
+        let no_axis = no_axis.unwrap_or_default();
+        let no_borders = no_borders.unwrap_or_default();
+        let no_figures = no_figures.unwrap_or_default();
 
-        let width = extract_flag!("width" | u32 | 120);
-        let height = extract_flag!("height" | u32 | 60);
+        let all_x_bits = lines
+            .iter()
+            .flat_map(|line| line.points.iter().map(|p| p.x.to_bits()))
+            .collect::<Vec<_>>();
 
-        let x_min = extract_flag!("x-min" | f32 | input.first().map(|p| p.x).unwrap_or(f32::MIN));
-        let x_max = extract_flag!("x-max" | f32 | input.last().map(|p| p.x).unwrap_or(f32::MAX));
-        let x_axis_style = extract_flag!("x-axis-style" | GraphLineStyle | GraphLineStyle::Solid);
-        let x_axis_label = extract_flag!("x-axis-label" | String | "X".into());
-
-        let y_min = extract_flag!("y-min" | f32);
-        let y_max = extract_flag!("y-may" | f32);
-        let y_axis_style = extract_flag!("y-axis-style" | GraphLineStyle | GraphLineStyle::Solid);
-        let y_axis_label = extract_flag!("y-axis-label" | String | "Y".into());
-
-        let no_header = extract_flag!("no-header" | bool | false);
-        let no_borders = extract_flag!("no-borders" | bool | false);
-        let no_axis = extract_flag!("no-axis" | bool | false);
-        let no_figures = extract_flag!("no-figures" | bool | false);
+        let x_min = x_min
+            .or_else(|| all_x_bits.iter().min().copied().map(f32::from_bits))
+            .unwrap_or(f32::MIN);
+        let x_max = x_max
+            .or_else(|| all_x_bits.iter().max().copied().map(f32::from_bits))
+            .unwrap_or(f32::MAX);
 
         let mut chart = match (y_min, y_max) {
             (Some(y_min), Some(y_max)) => {
@@ -147,16 +114,40 @@ impl PluginCommand for Draw {
             _ => Chart::new(width, height, x_min, x_max),
         };
 
-        let inputs_shape_list = input
+        let lines = lines
             .iter()
-            .map(|GraphPoint { x, y }| (*x, *y))
+            .map(|GraphLineConfig { color, points }| {
+                let shape_list = points
+                    .iter()
+                    .map(|GraphPoint { x, y }| (*x, *y))
+                    .collect::<Vec<_>>();
+
+                (color, shape_list)
+            })
             .collect::<Vec<_>>();
-        let input_shape = match ty {
-            GraphType::Points => Shape::Points(&inputs_shape_list),
-            GraphType::Lines => Shape::Lines(&inputs_shape_list),
-            GraphType::Steps => Shape::Steps(&inputs_shape_list),
-            GraphType::Bars => Shape::Bars(&inputs_shape_list),
-        };
+        let lines_color_shape = lines
+            .iter()
+            .map(|(color, shape_list)| {
+                let shape = match ty {
+                    GraphType::Points => Shape::Points(shape_list),
+                    GraphType::Lines => Shape::Lines(shape_list),
+                    GraphType::Steps => Shape::Steps(shape_list),
+                    GraphType::Bars => Shape::Bars(shape_list),
+                };
+
+                (color, shape)
+            })
+            .collect::<Vec<_>>();
+
+        let prepared_chart = lines_color_shape.iter().fold(
+            chart
+                .x_axis_style(x_style.into())
+                .y_axis_style(y_style.into()),
+            |chart, (color, shape)| match color {
+                Some(color) => chart.linecolorplot(shape, (*color).into()),
+                None => chart.lineplot(shape),
+            },
+        );
 
         let get_chart_str = |chart: &mut Chart<'_>| {
             if !no_borders {
@@ -173,20 +164,11 @@ impl PluginCommand for Draw {
 
             chart.to_string()
         };
-        let chart_str = get_chart_str(match line_color {
-            Some(color) => chart
-                .x_axis_style(x_axis_style.into())
-                .y_axis_style(y_axis_style.into())
-                .linecolorplot(&input_shape, color.into()),
-            None => chart
-                .x_axis_style(x_axis_style.into())
-                .y_axis_style(y_axis_style.into())
-                .lineplot(&input_shape),
-        });
+        let chart_str = get_chart_str(prepared_chart);
 
         let resulting_str = (match no_header {
             true => vec![chart_str],
-            false => vec![format!("{y_axis_label}/{x_axis_label}"), chart_str],
+            false => vec![format!("{y_label}/{x_label}"), chart_str],
         })
         .join("\n");
 

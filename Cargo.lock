@@ -901,9 +901,8 @@ dependencies = [
  "nu-plugin",
  "nu-protocol",
  "rgb",
- "serde",
+ "smart-default",
  "textplots",
- "typetag",
 ]
 
 [[package]]
@@ -1324,6 +1323,17 @@ name = "smallvec"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8917285742e9f3e1683f0a9c4e6b57960b7314d0b08d30d1ecd426713ee2eee9"
+
+[[package]]
+name = "smart-default"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0eb01866308440fc64d6c44d9e86c5cc17adfe33c4d6eed55da9145044d0ffc1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "strip-ansi-escapes"
