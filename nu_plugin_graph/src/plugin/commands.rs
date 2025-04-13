@@ -40,7 +40,7 @@ impl PluginCommand for Draw {
                     "lines: [{",
                     &[
                         "\tcolor: Colors of the Graph Line ({r: int, g: int, b: int} (0-255)) (default: nothing)",
-                        "points: Points of the Graph Line ([{x: float, y: float}] (default: nothing)"
+                        "points: Points of the Graph Line ([{x: float, y: float}]"
                     ].join("\n\t\t\t"),
                     "}]"
                 ].join("\n\t\t"),
