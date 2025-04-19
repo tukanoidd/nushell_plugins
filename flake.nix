@@ -60,28 +60,51 @@
       perSystem = {
         config,
         lib,
+        pkgs,
         ...
       }: let
         outputs = config.nci.outputs;
 
+        external_plugin = {
+          short_name,
+          config ? {},
+        }: {
+          inherit short_name;
+          inherit config;
+        };
         external_plugins =
-          builtins.map (short_name: let
-            name = "nu_plugin_${short_name}";
+          builtins.map (plugin: let
+            name = "nu_plugin_${plugin.short_name}";
           in rec {
             inherit name;
-            inherit short_name;
 
+            short_name = plugin.short_name;
+            config = plugin.config;
             path = inputs.${name};
           }) [
-            "clipboard"
-            "audio_hook"
-            "desktop_notifications"
-            "emoji"
-            "strutils"
-            "file"
-            "semver"
-            "vec"
-            "sled"
+            (external_plugin {short_name = "clipboard";})
+            (external_plugin {
+              short_name = "audio_hook";
+              config = let
+                mkDrvConfig = {
+                  nativeBuildInputs = with pkgs; [pkg-config];
+                  buildInputs = with pkgs; [alsa-lib];
+                };
+              in {
+                profiles = {
+                  release.features = ["default" "all-decoders"];
+                };
+                drvConfig.mkDerivation = mkDrvConfig;
+                depsDrvConfig.mkDerivation = mkDrvConfig;
+              };
+            })
+            (external_plugin {short_name = "desktop_notifications";})
+            (external_plugin {short_name = "emoji";})
+            (external_plugin {short_name = "strutils";})
+            (external_plugin {short_name = "file";})
+            (external_plugin {short_name = "semver";})
+            (external_plugin {short_name = "vec";})
+            (external_plugin {short_name = "sled";})
           ];
       in {
         nci = let
@@ -95,7 +118,7 @@
             external_plugins);
           external_crates = builtins.listToAttrs (builtins.map (plugin: {
               name = plugin.name;
-              value = {};
+              value = plugin.config;
             })
             external_plugins);
         in {
