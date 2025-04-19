@@ -79,7 +79,12 @@
             inherit name;
 
             short_name = plugin.short_name;
-            config = plugin.config;
+            config =
+              lib.attrsets.recursiveUpdate
+              plugin.config
+              {
+                drvConfig.mkDerivation.meta.mainProgram = name;
+              };
             path = inputs.${name};
           }) [
             (external_plugin {short_name = "clipboard";})
@@ -134,12 +139,27 @@
           crates =
             lib.mergeAttrs
             {
-              "nu_plugin_graph" = {};
+              "nu_plugin_graph" = {
+                drvConfig.mkDerivation.meta.mainProgram = "nu_plugin_graph";
+              };
+              "nu_plugin_nnm" = {
+                runtimeLibs = with pkgs; [
+                  libclang.lib
+                ];
+
+                drvConfig.mkDerivation.meta.mainProgram = "nu_plugin_nnm";
+              };
             }
             external_crates;
         };
 
-        devShells.default = outputs."nushell_plugins".devShell;
+        devShells.default = outputs."nushell_plugins".devShell.overrideAttrs (old: {
+          packages =
+            (old.packages or [])
+            ++ (with pkgs; [
+              cargo-edit
+            ]);
+        });
         packages = let
           external_packages = builtins.listToAttrs (builtins.map (plugin: {
               name = plugin.short_name;
@@ -155,6 +175,7 @@
         in (lib.mergeAttrs
           {
             graph = outputs."nu_plugin_graph".packages.release;
+            render = outputs."nu_plugin_nnm".packages.release;
           }
           other_plugin_packages);
       };
