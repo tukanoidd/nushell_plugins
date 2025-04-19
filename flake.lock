@@ -114,6 +114,150 @@
         "type": "github"
       }
     },
+    "nu_plugin_audio_hook": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742504175,
+        "narHash": "sha256-S/+K0oROQJU7ztAG46u3BdDHxFdi//2jX/J3BawU8zo=",
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_audio_hook",
+        "rev": "09a548fca38fd7a8ea3fb90502df3f4d051e60b4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_audio_hook",
+        "type": "github"
+      }
+    },
+    "nu_plugin_clipboard": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742553107,
+        "narHash": "sha256-Pcoc8EOc2R8WdekEhwTRhoR1uEbl14fQhizhYkiaAOk=",
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_clipboard",
+        "rev": "e940d0f939d26419aa1076bd0c4e8bef6d4e3321",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_clipboard",
+        "type": "github"
+      }
+    },
+    "nu_plugin_desktop_notifications": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742503783,
+        "narHash": "sha256-9I0gNpAZghOhURfO6xVifnd4sijHgPfXZNqeF++4Oyo=",
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_desktop_notifications",
+        "rev": "a016a1cade04228deb4a6dacc902af8932ce9ecb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_desktop_notifications",
+        "type": "github"
+      }
+    },
+    "nu_plugin_emoji": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1743274281,
+        "narHash": "sha256-dxNX4MRM/uL71ibMWpOiVMWntvLv6h69LR8nj2GBWbE=",
+        "owner": "fdncred",
+        "repo": "nu_plugin_emoji",
+        "rev": "458ddb8ddae5f5d2f694440a2e415258b172d2f2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fdncred",
+        "repo": "nu_plugin_emoji",
+        "type": "github"
+      }
+    },
+    "nu_plugin_file": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1743274494,
+        "narHash": "sha256-j7rUYL8IYqf2gxmI3JILxSNvAaPBlcmxXOtZmZiIgwE=",
+        "owner": "fdncred",
+        "repo": "nu_plugin_file",
+        "rev": "1c05c3a6fc1d7794e23172efea3bfed40f54f322",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fdncred",
+        "repo": "nu_plugin_file",
+        "type": "github"
+      }
+    },
+    "nu_plugin_semver": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742375927,
+        "narHash": "sha256-MDEYFPzMGoYWI+oin0LZRFFEHKHUG/87HEFIbuMOe54=",
+        "owner": "abusch",
+        "repo": "nu_plugin_semver",
+        "rev": "c8a0f2ccab35144b3c315990c4d25556dba63c8a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "abusch",
+        "repo": "nu_plugin_semver",
+        "type": "github"
+      }
+    },
+    "nu_plugin_sled": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742035131,
+        "narHash": "sha256-7AI/Nmxtm7jXc8AAOWC//pMUlEuiNjt6dgCv1Tzq/o0=",
+        "owner": "mrxiaozhuox",
+        "repo": "nu_plugin_sled",
+        "rev": "4a908f3baf27dc3cfab13ec25acb4e99d969e86c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mrxiaozhuox",
+        "repo": "nu_plugin_sled",
+        "type": "github"
+      }
+    },
+    "nu_plugin_strutils": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1743275315,
+        "narHash": "sha256-JXlxQtTNOAYf+ZSsiwKe4jKdj2eF0QLslhTRI5rwf+s=",
+        "owner": "fdncred",
+        "repo": "nu_plugin_strutils",
+        "rev": "e97056bcaa11a1e7583991030c76e7f2eac3acf3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fdncred",
+        "repo": "nu_plugin_strutils",
+        "type": "github"
+      }
+    },
+    "nu_plugin_vec": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742637281,
+        "narHash": "sha256-LIkke9qfqdDizTQxC1VU6T8s0m3/FamVw8mQx5LzZAU=",
+        "owner": "PhotonBursted",
+        "repo": "nu_plugin_vec",
+        "rev": "004ae22eb95d29b009054d2034ac729ded0c9e3f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "PhotonBursted",
+        "repo": "nu_plugin_vec",
+        "type": "github"
+      }
+    },
     "parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -200,6 +344,15 @@
       "inputs": {
         "nci": "nci",
         "nixpkgs": "nixpkgs",
+        "nu_plugin_audio_hook": "nu_plugin_audio_hook",
+        "nu_plugin_clipboard": "nu_plugin_clipboard",
+        "nu_plugin_desktop_notifications": "nu_plugin_desktop_notifications",
+        "nu_plugin_emoji": "nu_plugin_emoji",
+        "nu_plugin_file": "nu_plugin_file",
+        "nu_plugin_semver": "nu_plugin_semver",
+        "nu_plugin_sled": "nu_plugin_sled",
+        "nu_plugin_strutils": "nu_plugin_strutils",
+        "nu_plugin_vec": "nu_plugin_vec",
         "parts": "parts_2"
       }
     },
