@@ -146,11 +146,17 @@
               value = outputs.${plugin.name}.packages.release;
             })
             external_plugins);
+          nixpkgs_plugin_packages = let
+            ignored = ["regex"];
+            not_ignored = name: !(builtins.elem name ignored);
+          in
+            lib.filterAttrs (n: v: (not_ignored n) && (lib.isDerivation v)) pkgs.nushellPlugins;
+          other_plugin_packages = lib.mergeAttrs external_packages nixpkgs_plugin_packages;
         in (lib.mergeAttrs
           {
             graph = outputs."nu_plugin_graph".packages.release;
           }
-          external_packages);
+          other_plugin_packages);
       };
     };
 }
