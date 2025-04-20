@@ -3,10 +3,11 @@ use std::net::Ipv4Addr;
 use futures::future::join_all;
 use nu_protocol::{LabeledError, Record, Span, Value};
 use rusty_network_manager::{
-    ActiveProxy, ConnectionProxy, DeviceProxy,
+    ActiveProxy, ConnectionProxy, DeviceProxy, NetworkManagerProxy,
     dbus_interface_types::{
-        NMActivationStateFlags, NMActiveConnectionState, NMConnectivityState, NMDeviceCapabilities,
-        NMDeviceInterfaceFlags, NMDeviceState, NMDeviceStateReason, NMMetered,
+        NMActivationStateFlags, NMActiveConnectionState, NMCapability, NMConnectivityState,
+        NMDeviceCapabilities, NMDeviceInterfaceFlags, NMDeviceState, NMDeviceStateReason,
+        NMMetered,
     },
 };
 use zbus::zvariant::OwnedObjectPath;
@@ -82,6 +83,180 @@ pub trait ToValue {
     async fn to_value(self, _zbus_connection: &zbus::Connection) -> Value;
 }
 
+impl<'a> ToValue for NetworkManagerProxy<'a> {
+    async fn to_value(self, zbus_connection: &zbus::Connection) -> Value {
+        // TODO: activating_connection
+
+        let Some(active_connection_paths) = self.active_connections().await.ok() else {
+            return value!();
+        };
+        let active_connections: Vec<_> = join_all(active_connection_paths.into_iter().map(
+            |connection_path| async {
+                let active_proxy =
+                    ActiveProxy::new_from_path(connection_path.clone(), zbus_connection)
+                        .await
+                        .ok()?;
+
+                Some(
+                    (connection_path, active_proxy)
+                        .to_value(zbus_connection)
+                        .await,
+                )
+            },
+        ))
+        .await
+        .into_iter()
+        .flatten()
+        .collect();
+
+        let Some(all_device_paths) = self.all_devices().await.ok() else {
+            return value!();
+        };
+        let all_devices = {
+            value!(list join_all(all_device_paths.into_iter().map(|device_path| async {
+                let device_proxy = DeviceProxy::new_from_path(device_path, zbus_connection).await.ok()?;
+                Some(device_proxy.to_value(zbus_connection).await)
+            })).await.into_iter().flatten().collect())
+        };
+
+        let Some(capabilities_paths) = self.capabilities().await.ok() else {
+            return value!();
+        };
+        let capabilities = value!(list capabilities_paths.into_iter().map(NMCapability::from_u32_to_str_val).collect());
+
+        // TODO: checkpoints
+
+        let connectivity = self
+            .connectivity()
+            .await
+            .map(NMConnectivityState::from_u32_to_str_val)
+            .unwrap_or_nothing();
+        let connectivity_check_available = self
+            .connectivity_check_available()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+        let connectivity_check_enabled = self
+            .connectivity_check_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+
+        let Some(device_paths) = self.devices().await.ok() else {
+            return value!();
+        };
+        let devices = {
+            value!(list join_all(device_paths.into_iter().map(|device_path| async {
+                let device_proxy = DeviceProxy::new_from_path(device_path, zbus_connection).await.ok()?;
+                Some(device_proxy.to_value(zbus_connection).await)
+            })).await.into_iter().flatten().collect())
+        };
+
+        // TODO: global_dns_configuration
+
+        let metered = self
+            .metered()
+            .await
+            .map(NMMetered::from_u32_to_str_val)
+            .unwrap_or_nothing();
+        let networking_enabled = self
+            .networking_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+
+        // TODO: primary_connection
+
+        let primary_connection_type = self
+            .primary_connection_type()
+            .await
+            .to_val_or_nothing_with(Value::string);
+
+        // TODO: radio_flags
+
+        let startup = self.startup().await.to_val_or_nothing_with(Value::bool);
+        let version = self.version().await.to_val_or_nothing_with(Value::string);
+
+        // TODO: version_info
+
+        let wimax_enabled = self
+            .wimax_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+        let wimax_hardware_enabled = self
+            .wimax_hardware_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+
+        let wireless_enabled = self
+            .wireless_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+        let wireless_hardware_enabled = self
+            .wireless_hardware_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+
+        let wwan_enabled = self
+            .wwan_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+        let wwan_hardware_enabled = self
+            .wwan_hardware_enabled()
+            .await
+            .to_val_or_nothing_with(Value::bool);
+
+        value!({
+            // TODO: activating_connection
+
+            "active_connections": Value::list(
+                active_connections,
+                Span::unknown()
+            ),
+            "all_devices": all_devices,
+            "capabilities": capabilities,
+
+            // TODO: checkpoints
+
+            "connectivity": value!({
+                "state": connectivity,
+                "check": value!({
+                    "enabled": connectivity_check_enabled,
+                    "available": connectivity_check_available,
+                }),
+            }),
+            "devices": devices,
+
+            // TODO: global_dns_configuration
+
+            "metered": metered,
+            "networking_enabled": networking_enabled,
+            "primary_connetion": value!({
+                // TODO: primary_connection
+                "info": value!({}),
+                "type": primary_connection_type
+            }),
+
+            // TODO: radio_flags
+
+            "startup": startup,
+            "version": version,
+
+            // TODO: version_info
+
+            "wimax": value!({
+                "enabled": wimax_enabled,
+                "hardware_enabled": wimax_hardware_enabled
+            }),
+            "wireless": value!({
+                "enabled": wireless_enabled,
+                "hardware_enabled": wireless_hardware_enabled
+            }),
+            "wwan": value!({
+                "enabled": wwan_enabled,
+                "hardware_enabled": wwan_hardware_enabled
+            }),
+        })
+    }
+}
+
 impl<'a> ToValue for (OwnedObjectPath, ActiveProxy<'a>) {
     async fn to_value(self, zbus_connection: &zbus::Connection) -> Value {
         let (path, proxy) = self;
@@ -123,12 +298,11 @@ impl<'a> ToValue for (OwnedObjectPath, ActiveProxy<'a>) {
             .to_labeled()
             .map(NMActiveConnectionState::from_u32_to_str_val)
             .unwrap_or_nothing();
-        // TODO: proper presentation of flags
         let state_flags = proxy
             .state_flags()
             .await
-            .map(|f| f as i64)
-            .to_val_or_nothing_with(Value::int);
+            .map(NMActivationStateFlags::from_u32_to_str_val)
+            .unwrap_or_nothing();
 
         let type_ = proxy.type_().await.to_val_or_nothing_with(Value::string);
         let uuid = proxy.uuid().await.to_val_or_nothing_with(Value::string);
@@ -150,13 +324,17 @@ impl<'a> ToValue for (OwnedObjectPath, ActiveProxy<'a>) {
             "default": default,
             "default6": default6,
             "devices": devices,
+
             // TODO: dhcp4_config
             // TODO: dhcp6_config
+
             "id": id,
+
             // TODO: ip4_config
             // TODO: ip6_config
             // TODO: master
             // TODO: specific_object
+
             "state": state,
             "state_flags": state_flags,
             "type": type_,
@@ -169,11 +347,13 @@ impl<'a> ToValue for (OwnedObjectPath, ActiveProxy<'a>) {
 impl<'a> ToValue for ConnectionProxy<'a> {
     async fn to_value(self, _zbus_connection: &zbus::Connection) -> Value {
         let banner = self.banner().await.to_val_or_nothing_with(Value::string);
+
+        // TODO: proper representation
         let vpn_state = self
             .vpn_state()
             .await
             .to_labeled()
-            .map(NMActivationStateFlags::from_u32_to_str_val)
+            .map(|val| value!(int val as i64))
             .unwrap_or_nothing();
 
         value!({
@@ -195,6 +375,7 @@ impl<'a> ToValue for DeviceProxy<'a> {
         // TODO: device_type
         // TODO: dhcp4_config
         // TODO: dhcp6_config
+
         let driver = self.driver().await.to_val_or_nothing_with(Value::string);
         let driver_version = self
             .driver_version()
@@ -223,13 +404,17 @@ impl<'a> ToValue for DeviceProxy<'a> {
             .await
             .map(Ipv4Addr::from_u32_to_str_val)
             .unwrap_or_nothing();
+
         // TODO: ip4_config
+
         let ip4_connectivity = self
             .ip4_connectivity()
             .await
             .map(NMConnectivityState::from_u32_to_str_val)
             .unwrap_or_nothing();
+
         // TODO: ip6_config
+
         let ip6_connectivity = self
             .ip6_connectivity()
             .await
@@ -239,7 +424,9 @@ impl<'a> ToValue for DeviceProxy<'a> {
             .ip_interface()
             .await
             .to_val_or_nothing_with(Value::string);
+
         // TODO: lldp_neighbors
+
         let managed = self.managed().await.to_val_or_nothing_with(Value::bool);
         let metered = self
             .metered()
@@ -260,7 +447,9 @@ impl<'a> ToValue for DeviceProxy<'a> {
             .physical_port_id()
             .await
             .to_val_or_nothing_with(Value::string);
+
         // TODO: ports
+
         let real = self.real().await.to_val_or_nothing_with(Value::bool);
         let (state, reason) = match self.state_reason().await.ok() {
             Some((state, reason)) => (
@@ -273,9 +462,11 @@ impl<'a> ToValue for DeviceProxy<'a> {
 
         value!({
             "capabilities": capabilities,
+
             // TODO: device_type
             // TODO: dhcp4_config
             // TODO: dhcp6_config
+
             "driver": value!({
                 "name": driver,
                 "version": driver_version,
@@ -292,21 +483,27 @@ impl<'a> ToValue for DeviceProxy<'a> {
             "ip4": value!({
                 "address": ip4_address,
                 // TODO: ip4_config
+
                 "connectivity": ip4_connectivity,
             }),
             "ip6": value!({
                 // TODO: ip6_config
+
                 "connectivity": ip6_connectivity
             }),
             "ip_interface": ip_interface,
+
             // TODO: lldp_neighbors
+
             "managed": managed,
             "metered": metered,
             "mtu": mtu,
             "nm_plugin_missing": nm_plugin_missing,
             "path": path,
             "physical_port_id": physical_port_id,
+
             // TODO: ports
+
             "real": real,
             "state": state,
             "reason": reason,
