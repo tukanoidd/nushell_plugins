@@ -18,6 +18,6 @@ impl Plugin for NuNNMPlugin {
     }
 
     fn commands(&self) -> Vec<Box<dyn nu_plugin::PluginCommand<Plugin = Self>>> {
-        commands![Version, Status]
+        commands![Status]
     }
 }

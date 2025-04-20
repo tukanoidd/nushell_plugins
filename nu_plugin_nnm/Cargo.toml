@@ -9,7 +9,6 @@ homepage.workspace = true
 build = "build.rs"
 
 [dependencies]
-derive_more = { version = "2.0.1", features = ["deref"] }
 futures = "0.3.31"
 nu-plugin.workspace = true
 nu-protocol.workspace = true
