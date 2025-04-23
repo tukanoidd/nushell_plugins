@@ -1,5 +1,5 @@
 use nu_plugin::PluginCommand;
-use nu_protocol::Signature;
+use nu_protocol::{Signature, Type};
 
 use crate::run_with_nnm;
 
@@ -15,7 +15,7 @@ impl PluginCommand for Status {
     }
 
     fn signature(&self) -> Signature {
-        Signature::new(self.name())
+        Signature::new(self.name()).input_output_type(Type::Nothing, Type::record())
     }
 
     fn description(&self) -> &str {

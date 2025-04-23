@@ -175,7 +175,7 @@
         in (lib.mergeAttrs
           {
             graph = outputs."nu_plugin_graph".packages.release;
-            render = outputs."nu_plugin_nnm".packages.release;
+            nnm = outputs."nu_plugin_nnm".packages.release;
           }
           other_plugin_packages);
       };

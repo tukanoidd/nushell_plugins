@@ -1,5 +1,5 @@
 mod plugin;
-mod types;
+mod traits;
 mod util;
 
 use nu_plugin::{MsgPackSerializer, serve_plugin};

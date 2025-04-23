@@ -12,12 +12,12 @@ use rusty_network_manager::{
 };
 use zbus::zvariant::OwnedObjectPath;
 
-use crate::types::ValFromU32;
+use crate::traits::ValFromU32;
 
 #[macro_export]
 macro_rules! run_with_nnm {
     (|$zbus:ident, $nm:ident| $block:block) => {{
-        use $crate::{types::*, util::*};
+        use $crate::{traits::*, util::*};
 
         let runtime = tokio::runtime::Builder::new_multi_thread()
             .enable_io()
