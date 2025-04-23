@@ -142,12 +142,16 @@
               "nu_plugin_graph" = {
                 drvConfig.mkDerivation.meta.mainProgram = "nu_plugin_graph";
               };
-              "nu_plugin_nnm" = {
-                runtimeLibs = with pkgs; [
-                  libclang.lib
-                ];
-
-                drvConfig.mkDerivation.meta.mainProgram = "nu_plugin_nnm";
+              "nu_plugin_nnm" = let
+                drvConf = {
+                  env.LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
+                  mkDerivation.buildInputs = with pkgs; [libclang.lib];
+                };
+              in {
+                drvConfig = lib.mergeAttrs drvConf {
+                  mkDerivation.meta.mainProgram = "nu_plugin_nnm";
+                };
+                depsDrvConfig = drvConf;
               };
             }
             external_crates;
