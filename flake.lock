@@ -242,6 +242,22 @@
         "type": "github"
       }
     },
+    "nu_plugin_ulid": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742403023,
+        "narHash": "sha256-d9ngmzcLmn2hhRZn4mXAQOXQSYVZTRaajmtHPFYme9k=",
+        "owner": "lizclipse",
+        "repo": "nu_plugin_ulid",
+        "rev": "8b4d8a32ec07763f745fd426333d3c4ef385af58",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lizclipse",
+        "repo": "nu_plugin_ulid",
+        "type": "github"
+      }
+    },
     "nu_plugin_vec": {
       "flake": false,
       "locked": {
@@ -352,6 +368,7 @@
         "nu_plugin_semver": "nu_plugin_semver",
         "nu_plugin_sled": "nu_plugin_sled",
         "nu_plugin_strutils": "nu_plugin_strutils",
+        "nu_plugin_ulid": "nu_plugin_ulid",
         "nu_plugin_vec": "nu_plugin_vec",
         "parts": "parts_2"
       }

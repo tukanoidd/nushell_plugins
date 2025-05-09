@@ -46,6 +46,10 @@
       url = "github:mrxiaozhuox/nu_plugin_sled";
       flake = false;
     };
+    nu_plugin_ulid = {
+      url = "github:lizclipse/nu_plugin_ulid";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -110,6 +114,7 @@
             (external_plugin {short_name = "semver";})
             (external_plugin {short_name = "vec";})
             (external_plugin {short_name = "sled";})
+            (external_plugin {short_name = "ulid";})
           ];
       in {
         nci = let
