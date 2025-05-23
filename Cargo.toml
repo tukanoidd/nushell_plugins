@@ -3,8 +3,8 @@ members = ["nu_plugin_graph", "nu_plugin_nnm"]
 resolver = "3"
 
 [workspace.dependencies]
-nu-plugin = "0.103.0"
-nu-protocol = "0.103.0"
+nu-plugin = "0.104"
+nu-protocol = "0.104"
 built = "0.7"
 
 [workspace.package]
