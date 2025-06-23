@@ -50,6 +50,10 @@
       url = "github:lizclipse/nu_plugin_ulid";
       flake = false;
     };
+    nu_plugin_prometheus = {
+      url = "github:drbrain/nu_plugin_prometheus";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -115,6 +119,17 @@
             (external_plugin {short_name = "vec";})
             (external_plugin {short_name = "sled";})
             (external_plugin {short_name = "ulid";})
+            (external_plugin {
+              short_name = "prometheus";
+              config = {
+                depsDrvConfig.mkDerivation = {
+                  buildInputs = with pkgs; [
+                    pkg-config
+                    openssl
+                  ];
+                };
+              };
+            })
           ];
       in {
         nci = let
