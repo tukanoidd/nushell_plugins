@@ -54,6 +54,10 @@
       url = "github:drbrain/nu_plugin_prometheus";
       flake = false;
     };
+    nu_plugin_bexpand = {
+      url = "git+https://forge.axfive.net/Taylor/nu-plugin-bexpand";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -76,13 +80,16 @@
         external_plugin = {
           short_name,
           config ? {},
+          prefix ? "nu_plugin_",
         }: {
           inherit short_name;
           inherit config;
+          inherit prefix;
         };
         external_plugins =
           builtins.map (plugin: let
-            name = "nu_plugin_${plugin.short_name}";
+            name = "${plugin.prefix}${plugin.short_name}";
+            plug_path = "nu_plugin_${plugin.short_name}";
           in rec {
             inherit name;
 
@@ -93,7 +100,7 @@
               {
                 drvConfig.mkDerivation.meta.mainProgram = name;
               };
-            path = inputs.${name};
+            path = inputs.${plug_path};
           }) [
             (external_plugin {short_name = "clipboard";})
             (external_plugin {
@@ -129,6 +136,10 @@
                   ];
                 };
               };
+            })
+            (external_plugin {
+              prefix = "nu-plugin-";
+              short_name = "bexpand";
             })
           ];
       in {
