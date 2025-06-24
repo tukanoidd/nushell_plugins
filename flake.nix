@@ -149,6 +149,7 @@
             (external_plugin {
               prefix = "nu-plugin-";
               short_name = "bexpand";
+              config.drvConfig.meta.mainProgram = "nu_plugin_bexpand";
             })
             (external_plugin {short_name = "skim";})
           ];
