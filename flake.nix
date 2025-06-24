@@ -62,10 +62,6 @@
       url = "github:idanarye/nu_plugin_skim";
       flake = false;
     };
-    nu_plugin_bexpand = {
-      url = "git+https://forge.axfive.net/Taylor/nu-plugin-bexpand";
-      flake = false;
-    };
   };
 
   outputs = inputs @ {
@@ -145,11 +141,6 @@
                   ];
                 };
               };
-            })
-            (external_plugin {
-              prefix = "nu-plugin-";
-              short_name = "bexpand";
-              config.drvConfig.mkDerivation.meta.mainProgram = "nu_plugin_bexpand";
             })
             (external_plugin {short_name = "skim";})
           ];
