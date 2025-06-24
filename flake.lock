@@ -210,6 +210,22 @@
         "type": "github"
       }
     },
+    "nu_plugin_port_extension": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749719779,
+        "narHash": "sha256-v5A7O9nciPNn4ClZFvjEZ++jK8fa6A4ybvhVBl+I1jk=",
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_port_extension",
+        "rev": "1c41b5ae97a4fd88e204785e45fbfbc7f91fdba1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FMotalleb",
+        "repo": "nu_plugin_port_extension",
+        "type": "github"
+      }
+    },
     "nu_plugin_prometheus": {
       "flake": false,
       "locked": {
@@ -239,6 +255,22 @@
       "original": {
         "owner": "abusch",
         "repo": "nu_plugin_semver",
+        "type": "github"
+      }
+    },
+    "nu_plugin_skim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749591132,
+        "narHash": "sha256-8gO6pT40zBlFxPRapIO9qpMI9whutttqYgOPr91B9Ec=",
+        "owner": "idanarye",
+        "repo": "nu_plugin_skim",
+        "rev": "613d520df8fc3a493cdc5284c68c4031263f0eea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "idanarye",
+        "repo": "nu_plugin_skim",
         "type": "github"
       }
     },
@@ -398,8 +430,10 @@
         "nu_plugin_desktop_notifications": "nu_plugin_desktop_notifications",
         "nu_plugin_emoji": "nu_plugin_emoji",
         "nu_plugin_file": "nu_plugin_file",
+        "nu_plugin_port_extension": "nu_plugin_port_extension",
         "nu_plugin_prometheus": "nu_plugin_prometheus",
         "nu_plugin_semver": "nu_plugin_semver",
+        "nu_plugin_skim": "nu_plugin_skim",
         "nu_plugin_sled": "nu_plugin_sled",
         "nu_plugin_strutils": "nu_plugin_strutils",
         "nu_plugin_ulid": "nu_plugin_ulid",

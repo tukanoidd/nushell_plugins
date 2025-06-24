@@ -22,6 +22,10 @@
       url = "github:FMotalleb/nu_plugin_desktop_notifications";
       flake = false;
     };
+    nu_plugin_port_extension = {
+      url = "github:FMotalleb/nu_plugin_port_extension";
+      flake = false;
+    };
     nu_plugin_emoji = {
       url = "github:fdncred/nu_plugin_emoji";
       flake = false;
@@ -52,6 +56,10 @@
     };
     nu_plugin_prometheus = {
       url = "github:drbrain/nu_plugin_prometheus";
+      flake = false;
+    };
+    nu_plugin_skim = {
+      url = "github:idanarye/nu_plugin_skim";
       flake = false;
     };
     nu_plugin_bexpand = {
@@ -119,6 +127,7 @@
               };
             })
             (external_plugin {short_name = "desktop_notifications";})
+            (external_plugin {short_name = "port_extension";})
             (external_plugin {short_name = "emoji";})
             (external_plugin {short_name = "strutils";})
             (external_plugin {short_name = "file";})
@@ -141,6 +150,7 @@
               prefix = "nu-plugin-";
               short_name = "bexpand";
             })
+            (external_plugin {short_name = "skim";})
           ];
       in {
         nci = let
@@ -206,7 +216,7 @@
             not_ignored = name: !(builtins.elem name ignored);
           in
             lib.filterAttrs (n: v: (not_ignored n) && (lib.isDerivation v)) pkgs.nushellPlugins;
-          other_plugin_packages = lib.mergeAttrs external_packages nixpkgs_plugin_packages;
+          other_plugin_packages = lib.mergeAttrs nixpkgs_plugin_packages external_packages;
         in (lib.mergeAttrs
           {
             graph = outputs."nu_plugin_graph".packages.release;
