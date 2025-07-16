@@ -62,6 +62,11 @@
       url = "github:idanarye/nu_plugin_skim";
       flake = false;
     };
+
+    nu_plugin_plotters = {
+      url = "github:cptpiepmatz/nu-jupyter-kernel";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -143,6 +148,24 @@
               };
             })
             (external_plugin {short_name = "skim";})
+            (external_plugin {
+              short_name = "plotters";
+              config = {
+                depsDrvConfig.mkDerivation = {
+                  buildInputs = with pkgs; [
+                    pkg-config
+                    fontconfig
+                  ];
+                };
+
+                drvConfig.mkDerivation = {
+                  buildInputs = with pkgs; [
+                    fontconfig
+                    freetype
+                  ];
+                };
+              };
+            })
           ];
       in {
         nci = let
