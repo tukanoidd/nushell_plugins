@@ -10,44 +10,48 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
+    nu_plugin_audio_hook = {
+      url = "github:FMotalleb/nu_plugin_audio_hook";
+      flake = false;
+    };
     nu_plugin_clipboard = {
       url = "github:FMotalleb/nu_plugin_clipboard";
       flake = false;
     };
-    nu_plugin_audio_hook = {
-      url = "github:FMotalleb/nu_plugin_audio_hook";
+    nu_plugin_compress = {
+      url = "github:yybit/nu_plugin_compress";
       flake = false;
     };
     nu_plugin_desktop_notifications = {
       url = "github:FMotalleb/nu_plugin_desktop_notifications";
       flake = false;
     };
+    nu_plugin_file = {
+      url = "github:fdncred/nu_plugin_file";
+      flake = false;
+    };
+    nu_plugin_mime = {
+      url = "github:kik4444/nu_plugin_mime";
+      flake = false;
+    };
     nu_plugin_port_extension = {
       url = "github:FMotalleb/nu_plugin_port_extension";
       flake = false;
     };
-    nu_plugin_emoji = {
-      url = "github:fdncred/nu_plugin_emoji";
+    nu_plugin_regex = {
+      url = "github:fdncred/nu_plugin_regex";
+      flake = false;
+    };
+    nu_plugin_skim = {
+      url = "github:idanarye/nu_plugin_skim";
       flake = false;
     };
     nu_plugin_strutils = {
       url = "github:fdncred/nu_plugin_strutils";
       flake = false;
     };
-    nu_plugin_file = {
-      url = "github:fdncred/nu_plugin_file";
-      flake = false;
-    };
     nu_plugin_semver = {
       url = "github:abusch/nu_plugin_semver";
-      flake = false;
-    };
-    nu_plugin_vec = {
-      url = "github:PhotonBursted/nu_plugin_vec";
-      flake = false;
-    };
-    nu_plugin_sled = {
-      url = "github:mrxiaozhuox/nu_plugin_sled";
       flake = false;
     };
     nu_plugin_ulid = {
@@ -58,11 +62,6 @@
       url = "github:drbrain/nu_plugin_prometheus";
       flake = false;
     };
-    nu_plugin_skim = {
-      url = "github:idanarye/nu_plugin_skim";
-      flake = false;
-    };
-
     nu_plugin_plotters = {
       url = "github:cptpiepmatz/nu-jupyter-kernel";
       flake = false;
@@ -111,7 +110,6 @@
               };
             path = inputs.${plug_path};
           }) [
-            (external_plugin {short_name = "clipboard";})
             (external_plugin {
               short_name = "audio_hook";
               config = let
@@ -127,14 +125,16 @@
                 depsDrvConfig.mkDerivation = mkDrvConfig;
               };
             })
+            (external_plugin {short_name = "clipboard";})
+            (external_plugin {short_name = "compress";})
             (external_plugin {short_name = "desktop_notifications";})
-            (external_plugin {short_name = "port_extension";})
-            (external_plugin {short_name = "emoji";})
-            (external_plugin {short_name = "strutils";})
             (external_plugin {short_name = "file";})
+            (external_plugin {short_name = "mime";})
+            (external_plugin {short_name = "port_extension";})
+            (external_plugin {short_name = "regex";})
+            (external_plugin {short_name = "skim";})
+            (external_plugin {short_name = "strutils";})
             (external_plugin {short_name = "semver";})
-            (external_plugin {short_name = "vec";})
-            (external_plugin {short_name = "sled";})
             (external_plugin {short_name = "ulid";})
             (external_plugin {
               short_name = "prometheus";
@@ -147,7 +147,6 @@
                 };
               };
             })
-            (external_plugin {short_name = "skim";})
             (external_plugin {
               short_name = "plotters";
               config = {

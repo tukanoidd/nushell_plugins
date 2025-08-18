@@ -146,6 +146,22 @@
         "type": "github"
       }
     },
+    "nu_plugin_compress": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753398519,
+        "narHash": "sha256-On4Pdez5Z1kHmLU1g8ajqKTIV032uIch4cdvsPslPRE=",
+        "owner": "yybit",
+        "repo": "nu_plugin_compress",
+        "rev": "52264d0d7d15a4087c54cd32811163fea9441e23",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yybit",
+        "repo": "nu_plugin_compress",
+        "type": "github"
+      }
+    },
     "nu_plugin_desktop_notifications": {
       "flake": false,
       "locked": {
@@ -162,22 +178,6 @@
         "type": "github"
       }
     },
-    "nu_plugin_emoji": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1753363993,
-        "narHash": "sha256-ZlF04C3YWTIELTETwEPXDrVlSs/bXZ91Ps+RiRHmVy4=",
-        "owner": "fdncred",
-        "repo": "nu_plugin_emoji",
-        "rev": "dbe70e893b26d98a1f853b1c97f073052f6a32a1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "fdncred",
-        "repo": "nu_plugin_emoji",
-        "type": "github"
-      }
-    },
     "nu_plugin_file": {
       "flake": false,
       "locked": {
@@ -191,6 +191,22 @@
       "original": {
         "owner": "fdncred",
         "repo": "nu_plugin_file",
+        "type": "github"
+      }
+    },
+    "nu_plugin_mime": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1754212146,
+        "narHash": "sha256-+9iUC+4Tjk4pS4Ftfyygr2pCqA1ttT97VYy9GEGFN4s=",
+        "owner": "kik4444",
+        "repo": "nu_plugin_mime",
+        "rev": "652cefb2a98b15ead9aa6c222e775ba94d15afbd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kik4444",
+        "repo": "nu_plugin_mime",
         "type": "github"
       }
     },
@@ -242,6 +258,22 @@
         "type": "github"
       }
     },
+    "nu_plugin_regex": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753368394,
+        "narHash": "sha256-VFIrooG6BMIPmrI5X2+IcUiZYbCW1eSOVrczWk6hbHQ=",
+        "owner": "fdncred",
+        "repo": "nu_plugin_regex",
+        "rev": "e5cf15d999222197203cde1780664cd2bcd963ec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fdncred",
+        "repo": "nu_plugin_regex",
+        "type": "github"
+      }
+    },
     "nu_plugin_semver": {
       "flake": false,
       "locked": {
@@ -274,22 +306,6 @@
         "type": "github"
       }
     },
-    "nu_plugin_sled": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1746647102,
-        "narHash": "sha256-SLRkzGR0csXxlt+MgbYsB2ypIGCZ52kkO4pEAnp2AWI=",
-        "owner": "mrxiaozhuox",
-        "repo": "nu_plugin_sled",
-        "rev": "e129c66f955312b452a265985a55ba06a8497741",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mrxiaozhuox",
-        "repo": "nu_plugin_sled",
-        "type": "github"
-      }
-    },
     "nu_plugin_strutils": {
       "flake": false,
       "locked": {
@@ -319,22 +335,6 @@
       "original": {
         "owner": "lizclipse",
         "repo": "nu_plugin_ulid",
-        "type": "github"
-      }
-    },
-    "nu_plugin_vec": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1749667597,
-        "narHash": "sha256-Trkg46t2xaIr0Z45XFiQ+RqA3Emt9gWRCVZ3JJG/7lM=",
-        "owner": "PhotonBursted",
-        "repo": "nu_plugin_vec",
-        "rev": "69745d9b17853ff33989b14546fbc51b1ff167d8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "PhotonBursted",
-        "repo": "nu_plugin_vec",
         "type": "github"
       }
     },
@@ -431,18 +431,18 @@
         "nixpkgs": "nixpkgs",
         "nu_plugin_audio_hook": "nu_plugin_audio_hook",
         "nu_plugin_clipboard": "nu_plugin_clipboard",
+        "nu_plugin_compress": "nu_plugin_compress",
         "nu_plugin_desktop_notifications": "nu_plugin_desktop_notifications",
-        "nu_plugin_emoji": "nu_plugin_emoji",
         "nu_plugin_file": "nu_plugin_file",
+        "nu_plugin_mime": "nu_plugin_mime",
         "nu_plugin_plotters": "nu_plugin_plotters",
         "nu_plugin_port_extension": "nu_plugin_port_extension",
         "nu_plugin_prometheus": "nu_plugin_prometheus",
+        "nu_plugin_regex": "nu_plugin_regex",
         "nu_plugin_semver": "nu_plugin_semver",
         "nu_plugin_skim": "nu_plugin_skim",
-        "nu_plugin_sled": "nu_plugin_sled",
         "nu_plugin_strutils": "nu_plugin_strutils",
         "nu_plugin_ulid": "nu_plugin_ulid",
-        "nu_plugin_vec": "nu_plugin_vec",
         "parts": "parts_2"
       }
     },
